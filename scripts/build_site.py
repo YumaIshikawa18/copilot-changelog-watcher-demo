@@ -353,7 +353,7 @@ def build_items(max_items: int) -> list[FeedItem]:
     return items
 
 
-def build_payload(items: list[FeedItem]) -> dict[str, object]:
+def build_payload(items: list[FeedItem], max_items: int) -> dict[str, object]:
     now = datetime.now(TOKYO)
     counts = {
         "high": sum(1 for item in items if item.importance == "high"),
@@ -366,7 +366,7 @@ def build_payload(items: list[FeedItem]) -> dict[str, object]:
         "generated_at": now.isoformat(),
         "generated_at_label": now.strftime("%Y-%m-%d %H:%M JST"),
         "feed_url": FEED_URL,
-        "max_items": MAX_ITEMS,
+        "max_items": max_items,
         "item_count": len(items),
         "counts": counts,
         "latest_published": latest_published,
@@ -411,7 +411,7 @@ def main() -> int:
 
     try:
         items = build_items(MAX_ITEMS)
-        payload = build_payload(items)
+        payload = build_payload(items, MAX_ITEMS)
         copy_site_assets(SOURCE_DIR, OUTPUT_DIR)
         write_payload(OUTPUT_DIR, payload)
         logging.info("静的サイトを %s に生成しました。", OUTPUT_DIR)

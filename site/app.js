@@ -92,6 +92,8 @@ function renderEntries() {
   emptyState.hidden = filteredItems.length !== 0;
 
   filteredItems.forEach((item) => {
+    const tags = item.tags ?? [];
+    const matchedKeywords = item.matched_keywords ?? [];
     const card = document.createElement("article");
     card.className = "entry-card";
 
@@ -136,12 +138,12 @@ function renderEntries() {
       chipRow.append(createKeywordChip(item.changelog_type));
     }
 
-    item.tags.forEach((tag) => {
+    tags.forEach((tag) => {
       chipRow.append(createKeywordChip(tag));
     });
 
-    if (item.matched_keywords.length) {
-      item.matched_keywords.forEach((keyword) => {
+    if (matchedKeywords.length) {
+      matchedKeywords.forEach((keyword) => {
         chipRow.append(createKeywordChip(keyword));
       });
     }
