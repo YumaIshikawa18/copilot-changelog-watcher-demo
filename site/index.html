@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Copilot Changelog Radar</title>
+    <meta
+      name="description"
+      content="GitHub Changelog の Copilot RSS をキーワード分類して一覧表示する静的ダッシュボード"
+    >
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero">
+        <p class="eyebrow">GitHub Changelog Monitor</p>
+        <h1>Copilot Changelog Radar</h1>
+        <p class="hero-copy">
+          GitHub Changelog の Copilot RSS を毎日取り込み、キーワードベースで
+          <span>high / medium / low</span>
+          に整理して閲覧するための静的ダッシュボードです。
+        </p>
+        <div class="hero-meta" id="hero-meta">
+          <span class="meta-chip">Loading...</span>
+        </div>
+      </header>
+
+      <main class="content-grid">
+        <section class="panel metrics-panel">
+          <div class="panel-head">
+            <p class="panel-label">Overview</p>
+            <h2>Importance Snapshot</h2>
+          </div>
+          <div class="metric-grid" id="metric-grid"></div>
+        </section>
+
+        <section class="panel controls-panel">
+          <div class="panel-head">
+            <p class="panel-label">Filter</p>
+            <h2>View Control</h2>
+          </div>
+          <div class="filter-row" id="filter-row">
+            <button class="filter-button is-active" data-filter="all" type="button">All</button>
+            <button class="filter-button" data-filter="high" type="button">High</button>
+            <button class="filter-button" data-filter="medium" type="button">Medium</button>
+            <button class="filter-button" data-filter="low" type="button">Low</button>
+          </div>
+          <p class="helper-text">
+            AI 要約は使わず、記事タイトルと RSS 要約に含まれるキーワードだけで分類しています。
+          </p>
+        </section>
+
+        <section class="panel feed-panel">
+          <div class="panel-head">
+            <div>
+              <p class="panel-label">Feed</p>
+              <h2>Latest Entries</h2>
+            </div>
+            <a class="feed-link" href="https://github.blog/changelog/label/copilot/feed/" target="_blank" rel="noreferrer">
+              RSS を開く
+            </a>
+          </div>
+          <div class="entries" id="entries"></div>
+          <p class="empty-state" id="empty-state" hidden>該当する記事はありません。</p>
+        </section>
+      </main>
+    </div>
+
+    <script src="./app.js" defer></script>
+  </body>
+</html>
