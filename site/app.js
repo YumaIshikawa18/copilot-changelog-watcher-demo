@@ -102,7 +102,7 @@ function renderEntries() {
     const link = document.createElement("a");
     link.href = item.url;
     link.target = "_blank";
-    link.rel = "noreferrer";
+    link.rel = "noopener noreferrer";
     link.textContent = item.title;
     title.append(link);
 
