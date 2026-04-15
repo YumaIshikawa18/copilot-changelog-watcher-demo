@@ -86,7 +86,7 @@ Secrets は不要です。
 
 ## GitHub Actions 実行方法
 
-ワークフロー定義は [copilot-changelog.yml](/home/yuzukiku/projects/copilot-changelog-watcher-demo/.github/workflows/copilot-changelog.yml) にあります。
+ワークフロー定義は [copilot-changelog.yml](.github/workflows/copilot-changelog.yml) にあります。
 
 - 定期実行: 毎日 9:00（`Asia/Tokyo`）
 - 手動実行: `Actions` タブから `Copilot Changelog Watcher` を選び `Run workflow`
