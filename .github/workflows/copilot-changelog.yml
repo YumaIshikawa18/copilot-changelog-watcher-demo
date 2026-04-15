@@ -11,8 +11,7 @@ on:
       - "site/**"
       - "README.md"
   schedule:
-    - cron: "0 9 * * *"
-      timezone: "Asia/Tokyo"
+    - cron: "0 0 * * *"
   workflow_dispatch:
 
 permissions:
