@@ -56,12 +56,16 @@ function renderMetrics(payload) {
 
   cards.forEach((card) => {
     const element = document.createElement("article");
+    const title = document.createElement("span");
+    const value = document.createElement("strong");
+    const note = document.createElement("span");
+
     element.className = "metric-card";
-    element.innerHTML = `
-      <span>${card.title}</span>
-      <strong>${card.value}</strong>
-      <span>${card.note}</span>
-    `;
+    title.textContent = card.title;
+    value.textContent = String(card.value);
+    note.textContent = card.note;
+
+    element.append(title, value, note);
     metricGrid.append(element);
   });
 }
