@@ -12,7 +12,7 @@ from datetime import UTC, datetime
 from email.utils import parsedate_to_datetime
 from html.parser import HTMLParser
 from pathlib import Path
-from urllib.parse import urljoin
+from urllib.parse import parse_qs, urljoin, urlparse
 from zoneinfo import ZoneInfo
 
 import feedparser
@@ -121,7 +121,7 @@ class ChangelogPageParser(HTMLParser):
 
         if tag == "a" and "Tag" in classes:
             href = attributes.get("href") or ""
-            if "label=copilot" not in href:
+            if href and not is_copilot_label_url(self.page_url, href):
                 self._capture_tag = True
 
     def handle_endtag(self, tag: str) -> None:
@@ -188,6 +188,17 @@ def clean_text(value: str) -> str:
     without_tags = TAG_RE.sub(" ", value or "")
     unescaped = html.unescape(without_tags)
     return WS_RE.sub(" ", unescaped).strip()
+
+
+def is_copilot_label_url(base_url: str, href: str) -> bool:
+    absolute_url = urljoin(base_url, href)
+    parsed = urlparse(absolute_url)
+    query_labels = [value.lower() for value in parse_qs(parsed.query).get("label", [])]
+
+    if "copilot" in query_labels:
+        return True
+
+    return parsed.path.rstrip("/") == urlparse(LIST_URL).path.rstrip("/")
 
 
 def parse_published_to_iso(value: str) -> str | None:
@@ -286,10 +297,16 @@ def fetch_rss_entries(url: str) -> dict[str, dict[str, str | None]]:
 def fetch_changelog_items(list_url: str, max_items: int) -> list[dict[str, object]]:
     logging.info("Changelog 一覧を取得します: %s", list_url)
     items: list[dict[str, object]] = []
+    seen_pages: set[str] = set()
     seen_urls: set[str] = set()
     next_url: str | None = list_url
 
     while next_url and len(items) < max_items:
+        if next_url in seen_pages:
+            logging.warning("同じ一覧ページを再訪しようとしたため巡回を停止します: %s", next_url)
+            break
+        seen_pages.add(next_url)
+
         response = requests.get(
             next_url,
             headers={"User-Agent": "copilot-changelog-watcher-demo/2.0"},
