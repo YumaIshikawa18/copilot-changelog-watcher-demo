@@ -30,9 +30,11 @@ function formatPublished(value) {
 
 function renderHeroMeta(payload) {
   heroMeta.innerHTML = "";
+  const maxItems = payload.max_items ?? payload.item_count;
   const items = [
     `更新: ${payload.generated_at_label}`,
-    `記事数: ${payload.item_count}件`,
+    `実取得: ${payload.item_count}件`,
+    `取得上限: ${maxItems}件`,
     "分類: keyword-only",
   ];
 
@@ -90,6 +92,8 @@ function renderEntries() {
   emptyState.hidden = filteredItems.length !== 0;
 
   filteredItems.forEach((item) => {
+    const tags = item.tags ?? [];
+    const matchedKeywords = item.matched_keywords ?? [];
     const card = document.createElement("article");
     card.className = "entry-card";
 
@@ -127,12 +131,24 @@ function renderEntries() {
 
     card.append(head, meta, summary, reason);
 
-    if (item.matched_keywords.length) {
-      const chipRow = document.createElement("div");
-      chipRow.className = "chip-row";
-      item.matched_keywords.forEach((keyword) => {
+    const chipRow = document.createElement("div");
+    chipRow.className = "chip-row";
+
+    if (item.changelog_type) {
+      chipRow.append(createKeywordChip(item.changelog_type));
+    }
+
+    tags.forEach((tag) => {
+      chipRow.append(createKeywordChip(tag));
+    });
+
+    if (matchedKeywords.length) {
+      matchedKeywords.forEach((keyword) => {
         chipRow.append(createKeywordChip(keyword));
       });
+    }
+
+    if (chipRow.children.length) {
       card.append(chipRow);
     }
 
