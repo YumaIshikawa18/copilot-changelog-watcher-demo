@@ -30,10 +30,11 @@ function formatPublished(value) {
 
 function renderHeroMeta(payload) {
   heroMeta.innerHTML = "";
+  const fetchedCount = payload.max_items ?? payload.item_count;
   const items = [
     `更新: ${payload.generated_at_label}`,
     `記事数: ${payload.item_count}件`,
-    "取得: latest 50",
+    `取得: latest ${fetchedCount}`,
     "分類: keyword-only",
   ];
 

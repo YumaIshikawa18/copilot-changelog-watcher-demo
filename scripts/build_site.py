@@ -232,6 +232,11 @@ def classify_item(
     tags: list[str],
 ) -> tuple[str, str, list[str]]:
     source_text = " ".join([title, summary, changelog_type, " ".join(tags)]).lower()
+
+    if changelog_type.lower() == "retired":
+        retired_hits = find_keyword_hits(source_text, HIGH_PRIORITY_KEYWORDS)
+        return "high", "Retired 系の変更として影響確認が必要なため", retired_hits or ["retired"]
+
     high_hits = find_keyword_hits(source_text, HIGH_PRIORITY_KEYWORDS)
     medium_hits = find_keyword_hits(source_text, MEDIUM_PRIORITY_KEYWORDS)
     low_hits = find_keyword_hits(source_text, LOW_PRIORITY_KEYWORDS)
@@ -242,9 +247,6 @@ def classify_item(
         return "medium", "プレビュー公開や SDK 変更に関する更新のため", medium_hits
     if low_hits:
         return "low", "改善系の変更が中心と読み取れるため", low_hits
-
-    if changelog_type.lower() == "retired":
-        return "high", "Retired 系の変更として影響確認が必要なため", ["retired"]
 
     return "medium", "Copilot 関連更新として確認価値があるため", []
 
@@ -364,6 +366,7 @@ def build_payload(items: list[FeedItem]) -> dict[str, object]:
         "generated_at": now.isoformat(),
         "generated_at_label": now.strftime("%Y-%m-%d %H:%M JST"),
         "feed_url": FEED_URL,
+        "max_items": MAX_ITEMS,
         "item_count": len(items),
         "counts": counts,
         "latest_published": latest_published,
