@@ -33,6 +33,7 @@ function renderHeroMeta(payload) {
   const items = [
     `更新: ${payload.generated_at_label}`,
     `記事数: ${payload.item_count}件`,
+    "取得: latest 50",
     "分類: keyword-only",
   ];
 
@@ -127,12 +128,24 @@ function renderEntries() {
 
     card.append(head, meta, summary, reason);
 
+    const chipRow = document.createElement("div");
+    chipRow.className = "chip-row";
+
+    if (item.changelog_type) {
+      chipRow.append(createKeywordChip(item.changelog_type));
+    }
+
+    item.tags.forEach((tag) => {
+      chipRow.append(createKeywordChip(tag));
+    });
+
     if (item.matched_keywords.length) {
-      const chipRow = document.createElement("div");
-      chipRow.className = "chip-row";
       item.matched_keywords.forEach((keyword) => {
         chipRow.append(createKeywordChip(keyword));
       });
+    }
+
+    if (chipRow.children.length) {
       card.append(chipRow);
     }
 
